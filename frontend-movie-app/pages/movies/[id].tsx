@@ -1,10 +1,17 @@
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
-import { BsBookmark } from "react-icons/bs";
+import { BsBookmark, BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { FaStar, FaClock, FaCalendarAlt } from "react-icons/fa";
 import { ImHeart } from "react-icons/im";
+import { Movie, Credits, Review } from "@/interfaces";
+import ReviewCard from "@/components/common/reviewcard";
 
-export default function MovieDetails({ movie, credits }: { movie: any; credits: any }) {
+export default function MovieDetails({ movie, credits, reviews }: { movie: Movie; credits: Credits; reviews: Review[] }) {
     return (
         <>
             <section className="relative w-full min-h-[60vh] text-white">
@@ -113,21 +120,62 @@ export default function MovieDetails({ movie, credits }: { movie: any; credits: 
                     ))}
                 </div>
             </section>
+
+            {/* Reviews Carousel */}
+            <section className="max-w-7xl mx-auto px-4 py-10 text-white relative">
+                <h2 className="text-3xl text-gray-700 font-bold mb-6">Reviews</h2>
+
+                <div className="relative">
+                    <Swiper
+                        modules={[Navigation]}
+                        navigation={{
+                            nextEl: ".custom-next",
+                            prevEl: ".custom-prev",
+                        }}
+                        spaceBetween={16}
+                        slidesPerView="auto"
+                        className="pb-10"
+                    >
+                        {reviews.map((review: any) => (
+                            <SwiperSlide
+                                key={review.id}
+                                className="!w-[250px] sm:!w-[350px] md:!w-[400px] bg-gray-800 rounded-3xl p-4"
+                            >
+                                <ReviewCard review={review} />
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+
+                    {/* Custom navigation buttons */}
+                    <div className="custom-prev hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10">
+                        <button className="w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition hover:scale-110">
+                            <BsChevronLeft className="text-xl" />
+                        </button>
+                    </div>
+                    <div className="custom-next hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10">
+                        <button className="w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition hover:scale-110">
+                            <BsChevronRight className="text-xl" />
+                        </button>
+                    </div>
+                </div>
+            </section>
         </>
     );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const { id } = context.params!;
-    const [movieRes, creditsRes] = await Promise.all([
+    const [movieRes, creditsRes, reviewsRes] = await Promise.all([
         fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&language=en-US`),
         fetch(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.TMDB_API_KEY}&language=en-US`),
+        fetch(`https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1`),
     ]);
 
     const movie = await movieRes.json();
     const credits = await creditsRes.json();
+    const reviews = await reviewsRes.json();
 
     return {
-        props: { movie, credits },
+        props: { movie, credits, reviews: reviews.results || [] },
     };
 };
