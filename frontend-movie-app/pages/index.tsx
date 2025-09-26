@@ -1,19 +1,63 @@
-import React from "react";
-import { GetServerSideProps } from "next";
+import React, { useEffect, useState } from "react";
 import MovieCarousel from "@/components/common/moviecarousel";
 import { Movie } from "@/interfaces";
 
+export default function Home() {
+  const [trending, setTrending] = useState<Movie[]>([]);
+  const [recommended, setRecommended] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-export default function Home({
-  trending,
-  recommended,
-}: {
-  trending: Movie[];
-  recommended: Movie[];
-}) {
   const handleToggleFavorite = (id: number, isFav: boolean) => {
     console.log(`Movie ${id} is ${isFav ? "added" : "removed"} from favorites`);
   };
+
+  useEffect(() => {
+    async function fetchMovies() {
+      try {
+        const [trendingRes, recommendedRes] = await Promise.all([
+          fetch(`../api/trending`),
+          fetch(`../api/recommended`),
+        ]);
+
+        if (!trendingRes.ok || !recommendedRes.ok) {
+          throw new Error("Failed to fetch movie data");
+        }
+
+        const trendingData = await trendingRes.json();
+        const recommendedData = await recommendedRes.json();
+
+        /* // ✅ Add these logs here
+        console.log("Trending data:", trendingData);
+        console.log("Recommended data:", recommendedData); */
+
+        setTrending(trendingData.results || []);
+        setRecommended(recommendedData.results || []);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchMovies();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-10 text-center text-gray-800">
+        <p className="text-xl font-medium"></p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-10 text-center text-red-500">
+        <p className="text-xl font-medium">Error: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-10">
@@ -50,25 +94,4 @@ export default function Home({
       </section>
     </main>
   );
-}
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const [trendingRes, recommendedRes] = await Promise.all([
-    fetch(
-      `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1`
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1`
-    ),
-  ]);
-
-  const trendingData = await trendingRes.json();
-  const recommendedData = await recommendedRes.json();
-
-  return {
-    props: {
-      trending: trendingData.results || [],
-      recommended: recommendedData.results || [],
-    },
-  };
 }
