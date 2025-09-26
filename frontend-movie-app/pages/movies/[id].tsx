@@ -11,7 +11,7 @@ import { ImHeart } from "react-icons/im";
 import { Movie, Credits, Review } from "@/interfaces";
 import ReviewCard from "@/components/common/reviewcard";
 
-export default function MovieDetails({ movie, credits, reviews }: { movie: Movie; credits: Credits; reviews: Review[] }) {
+export default function MovieDetails({ movie, credits, reviews, related }: { movie: Movie; credits: Credits; reviews: Review[]; related: any[] }) {
     return (
         <>
             <section className="relative w-full min-h-[60vh] text-white">
@@ -159,23 +159,83 @@ export default function MovieDetails({ movie, credits, reviews }: { movie: Movie
                     </div>
                 </div>
             </section>
+
+            {/* Related Movies */}
+            {related.length > 0 && (
+                <section className="max-w-7xl mx-auto px-4 py-10 text-white relative">
+                    <h2 className="text-3xl text-gray-700 font-bold mb-6">Related Movies</h2>
+
+                    <div className="relative">
+                        <Swiper
+                            modules={[Navigation]}
+                            navigation={{
+                                nextEl: ".related-next",
+                                prevEl: ".related-prev",
+                            }}
+                            spaceBetween={16}
+                            slidesPerView="auto"
+                            className="pb-10"
+                        >
+                            {related.map((movie: any) => (
+                                <SwiperSlide
+                                    key={movie.id}
+                                    className="!w-[180px] sm:!w-[220px] md:!w-[240px] bg-gray-800 rounded-lg overflow-hidden"
+                                >
+                                    <a href={`/movies/${movie.id}`} className="block">
+                                        <Image
+                                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                            alt={movie.title}
+                                            width={240}
+                                            height={360}
+                                            className="object-cover w-full h-full"
+                                        />
+                                        <div className="p-2 text-sm font-semibold text-white truncate">
+                                            {movie.title}
+                                        </div>
+                                    </a>
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
+
+                        {/* Navigation buttons */}
+                        <div className="related-prev hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10">
+                            <button className="w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition hover:scale-110">
+                                <BsChevronLeft className="text-xl" />
+                            </button>
+                        </div>
+                        <div className="related-next hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10">
+                            <button className="w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition hover:scale-110">
+                                <BsChevronRight className="text-xl" />
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            )}
+
         </>
     );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const { id } = context.params!;
-    const [movieRes, creditsRes, reviewsRes] = await Promise.all([
+    const [movieRes, creditsRes, reviewsRes, similarRes] = await Promise.all([
         fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&language=en-US`),
         fetch(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.TMDB_API_KEY}&language=en-US`),
         fetch(`https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1`),
+        fetch(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1`),
     ]);
 
     const movie = await movieRes.json();
     const credits = await creditsRes.json();
     const reviews = await reviewsRes.json();
+    const related = await similarRes.json();
 
     return {
-        props: { movie, credits, reviews: reviews.results || [] },
+        props: {
+            movie,
+            credits,
+            reviews: reviews.results || [],
+            related: related.results || [],
+        },
     };
 };
