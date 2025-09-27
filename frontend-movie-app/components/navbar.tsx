@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BiSearch } from "react-icons/bi";
-import { ImHeart } from "react-icons/im"; 
+import { BsBookmark } from "react-icons/bs";
 
 
 export default function Navbar() {
@@ -50,10 +50,10 @@ export default function Navbar() {
 
 					{/* Right: Favorites + Sign in */}
 					<div className="flex items-center gap-4">
-						<Link href="/favourites" className="inline-flex items-center">
+						<Link href="/watchlist" className="inline-flex items-center">
 							<div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
 								{/* Heart icon */}
-								<ImHeart />
+								<BsBookmark />
 							</div>
 						</Link>
 
