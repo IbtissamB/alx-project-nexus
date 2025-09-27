@@ -1,9 +1,10 @@
-// components/MovieCard.tsx
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { BsHeart } from "react-icons/bs";
+import { useEffect, useState } from "react";
+import { BsBookmarkFill, BsBookmark } from "react-icons/bs";
 import { MovieCardProps } from "@/interfaces";
+import { isInWatchlist, toggleWatchlist } from "@/utils/watchlist";
+
 
 export default function MovieCard({
   id,
@@ -11,18 +12,30 @@ export default function MovieCard({
   poster,
   year,
   rating,
-  onToggleFavorite,
 }: MovieCardProps) {
-  const [isFav, setIsFav] = useState(false);
+  const [inWatchlist, setInWatchlist] = useState(false);
 
-  const handleFavorite = () => {
-    setIsFav((prev) => {
-      const newFav = !prev;
-      if (onToggleFavorite) {
-        onToggleFavorite(id, newFav);
-      }
-      return newFav;
-    });
+  useEffect(() => {
+    const stored = localStorage.getItem("watchlist");
+    if (stored) {
+      const list = JSON.parse(stored);
+      setInWatchlist(list.some((movie: any) => movie.id === id));
+    }
+  }, [id]);
+
+  const handleToggleWatchlist = () => {
+    const stored = localStorage.getItem("watchlist");
+    const list = stored ? JSON.parse(stored) : [];
+
+    let updated;
+    if (inWatchlist) {
+      updated = list.filter((movie: any) => movie.id !== id);
+    } else {
+      updated = [...list, { id, title, poster, year, rating }];
+    }
+
+    localStorage.setItem("watchlist", JSON.stringify(updated));
+    setInWatchlist(!inWatchlist);
   };
 
   return (
@@ -38,7 +51,7 @@ export default function MovieCard({
           />
 
           {/* Blurred overlay with info */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 hover:backdrop-blur-md">
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/40 opacity-0 group-hover:opacity-100 backdrop-blur-md transition-opacity duration-300 z-10">
             <h3 className="text-lg font-semibold text-white truncate mb-1">
               {title}
             </h3>
@@ -52,12 +65,12 @@ export default function MovieCard({
           </div>
         </Link>
 
-        {/* Favorite button — now inside the poster container */}
+        {/* Watchlist button */}
         <button
-          onClick={handleFavorite}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 flex items-center justify-center hover:bg-black/70 transition text-white"
+          onClick={handleToggleWatchlist}
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 flex items-center justify-center hover:bg-black/70 transition text-white z-20"
         >
-          <BsHeart className={isFav ? "fill-red-500" : ""} />
+          {inWatchlist ? <BsBookmarkFill className="text-red-400" /> : <BsBookmark />}
         </button>
       </div>
     </div>

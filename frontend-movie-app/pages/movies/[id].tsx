@@ -1,17 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
-import { BsBookmark, BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import { BsBookmark, BsBookmarkFill, BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { FaStar, FaClock, FaCalendarAlt } from "react-icons/fa";
 import { ImHeart } from "react-icons/im";
 import { Movie, Credits, Review } from "@/interfaces";
 import ReviewCard from "@/components/common/reviewcard";
+import { isInWatchlist, toggleWatchlist } from "@/utils/watchlist";
 
 export default function MovieDetails({ movie, credits, reviews, related }: { movie: Movie; credits: Credits; reviews: Review[]; related: any[] }) {
+    const [inWatchlist, setInWatchlist] = useState(false);
+
+    useEffect(() => {
+        setInWatchlist(isInWatchlist(movie.id));
+    }, [movie.id]);
+
+    const handleWatchlistClick = () => {
+        const newState = toggleWatchlist({
+            id: movie.id,
+            title: movie.title,
+            poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+            year: movie.release_date?.split("-")[0],
+            rating: movie.vote_average.toFixed(1),
+        });
+        setInWatchlist(newState);
+    };
+
     return (
         <>
             <section className="relative w-full min-h-[60vh] text-white">
@@ -80,10 +98,14 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                                 <ImHeart />
                             </a>
 
-                            <button className="flex items-center gap-2 bg-red-400 hover:bg-gray-700 text-white px-4 py-2 rounded-full transition">
-                                <BsBookmark />
-                                <span className="text-sm">Add to Watchlist</span>
+                            <button
+                                onClick={handleWatchlistClick}
+                                className="flex items-center gap-2 bg-red-400 hover:bg-gray-700 text-white px-4 py-2 rounded-full transition"
+                            >
+                                {inWatchlist ? <BsBookmarkFill /> : <BsBookmark />}
+                                <span className="text-sm">{inWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}</span>
                             </button>
+
                         </div>
                     </div>
                 </div>
