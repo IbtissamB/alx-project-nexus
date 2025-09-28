@@ -1,5 +1,6 @@
 import Navbar from "./navbar";
 import { LayoutProps } from "@/interfaces";
+import Footer from "./footer";
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
@@ -8,6 +9,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="flex-1">
         {children}
       </main>
+      <Footer />
     </div>
   );
 };
