@@ -6,7 +6,9 @@ import "swiper/css/navigation";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import MovieCard from "./moviecard";
 
-export default function MovieCarousel({ movies }: { movies: any[] }) {
+import { MovieCardProps } from "@/interfaces";
+
+export default function MovieCarousel({ movies }: { movies: MovieCardProps[] }) {
   return (
     <div className="px-2 md:px-4 lg:px-6">
       <Swiper

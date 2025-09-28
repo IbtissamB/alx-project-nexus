@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BsBookmarkFill, BsBookmark } from "react-icons/bs";
 import { MovieCardProps } from "@/interfaces";
-import { isInWatchlist, toggleWatchlist } from "@/utils/watchlist";
 
 
 export default function MovieCard({
@@ -19,7 +18,7 @@ export default function MovieCard({
     const stored = localStorage.getItem("watchlist");
     if (stored) {
       const list = JSON.parse(stored);
-      setInWatchlist(list.some((movie: any) => movie.id === id));
+      setInWatchlist(list.some((movie: MovieCardProps) => movie.id === id));
     }
   }, [id]);
 
@@ -29,7 +28,7 @@ export default function MovieCard({
 
     let updated;
     if (inWatchlist) {
-      updated = list.filter((movie: any) => movie.id !== id);
+      updated = list.filter((movie: MovieCardProps) => movie.id !== id);
     } else {
       updated = [...list, { id, title, poster, year, rating }];
     }

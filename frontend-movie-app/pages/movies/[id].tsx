@@ -8,11 +8,11 @@ import Image from "next/image";
 import { BsBookmark, BsBookmarkFill, BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { FaStar, FaClock, FaCalendarAlt } from "react-icons/fa";
 import { ImHeart } from "react-icons/im";
-import { Movie, Credits, Review } from "@/interfaces";
+import { Movie, Credits, Review, RelatedMovie } from "@/interfaces";
 import ReviewCard from "@/components/common/reviewcard";
 import { isInWatchlist, toggleWatchlist } from "@/utils/watchlist";
 
-export default function MovieDetails({ movie, credits, reviews, related }: { movie: Movie; credits: Credits; reviews: Review[]; related: any[] }) {
+export default function MovieDetails({ movie, credits, reviews, related }: { movie: Movie; credits: Credits; reviews: Review[]; related: RelatedMovie[] }) {
     const [inWatchlist, setInWatchlist] = useState(false);
 
     useEffect(() => {
@@ -80,7 +80,7 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                         </div>
 
                         <div className="flex flex-wrap gap-2 mb-6">
-                            {movie.genres?.map((genre: any) => (
+                            {movie.genres?.map((genre) => (
                                 <span
                                     key={genre.id}
                                     className="bg-gray-700 text-sm px-3 py-1 rounded-full"
@@ -121,7 +121,7 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
             <section className="max-w-7xl mx-auto px-4 py-10 text-gray-700">
                 <h2 className="text-3xl font-bold mb-6">Cast</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                    {credits.cast.slice(0, 10).map((person: any) => (
+                    {credits.cast.slice(0, 10).map((person) => (
                         <div key={person.id} className="text-center">
                             <div className="w-24 h-24 mx-auto mb-2 rounded-full overflow-hidden border-2 border-gray-600">
                                 <Image
@@ -158,7 +158,7 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                         slidesPerView="auto"
                         className="pb-10"
                     >
-                        {reviews.map((review: any) => (
+                        {reviews.map((review) => (
                             <SwiperSlide
                                 key={review.id}
                                 className="!w-[250px] sm:!w-[350px] md:!w-[400px] bg-gray-800 rounded-3xl p-4"
@@ -198,23 +198,42 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                             slidesPerView="auto"
                             className="pb-10"
                         >
-                            {related.map((movie: any) => (
+                            {related.map((movie) => (
                                 <SwiperSlide
                                     key={movie.id}
-                                    className="!w-[180px] sm:!w-[220px] md:!w-[240px] bg-gray-800 rounded-lg overflow-hidden"
+                                    className="!w-[160px] sm:!w-[200px] md:!w-[240px]"
                                 >
-                                    <a href={`/movies/${movie.id}`} className="block">
-                                        <Image
-                                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                            alt={movie.title}
-                                            width={240}
-                                            height={360}
-                                            className="object-cover w-full h-full"
-                                        />
-                                        <div className="p-2 text-sm font-semibold text-white truncate">
-                                            {movie.title}
+                                    <div className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                                        <div className="relative w-full h-60 sm:h-72 md:h-84 overflow-hidden">
+                                            {/* Poster */}
+                                            <a href={`/movies/${movie.id}`} className="block">
+                                                <Image
+                                                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                                    alt={movie.title}
+                                                    fill
+                                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                                />
+
+                                                {/* Blurred overlay with info */}
+                                                <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/40 opacity-0 group-hover:opacity-100 backdrop-blur-md transition-opacity duration-300 z-10">
+                                                    <h3 className="text-lg font-semibold text-white truncate mb-1">
+                                                        {movie.title}
+                                                    </h3>
+                                                    <div className="flex items-center gap-2 justify-between">
+                                                        <p className="text-sm text-white/90">
+                                                            {movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}
+                                                        </p>
+                                                        <div className="flex items-center gap-1">
+                                                            <span className="text-yellow-400">★</span>
+                                                            <span className="text-sm text-white">
+                                                                {movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
                                         </div>
-                                    </a>
+                                    </div>
                                 </SwiperSlide>
                             ))}
                         </Swiper>

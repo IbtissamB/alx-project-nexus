@@ -8,7 +8,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const handleToggleFavorite = (id: number, isFav: boolean) => {
+  const handleToggleFavorite = (id: string | number, isFav: boolean) => {
     console.log(`Movie ${id} is ${isFav ? "added" : "removed"} from favorites`);
   };
 
@@ -33,8 +33,8 @@ export default function Home() {
 
         setTrending(trendingData.results || []);
         setRecommended(recommendedData.results || []);
-      } catch (err: any) {
-        setError(err.message || "Something went wrong");
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
         setLoading(false);
       }

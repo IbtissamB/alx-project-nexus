@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { Review } from "@/interfaces";
 
-export default function ReviewCard({ review }: { review: any }) {
+export default function ReviewCard({ review }: { review: Review }) {
   const [expanded, setExpanded] = useState(false);
 
   // Handle avatar fallback

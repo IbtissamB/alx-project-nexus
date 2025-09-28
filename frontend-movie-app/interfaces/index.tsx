@@ -46,6 +46,15 @@ export interface Review {
   created_at: string;
   author_details?: {
     rating: number;
+    avatar_path?: string | null;
   };
+}
+
+export interface RelatedMovie {
+  id: number;
+  title: string;
+  poster_path: string;
+  release_date: string;
+  vote_average: number;
 }
 

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import MovieCard from "@/components/common/moviecard";
+import { MovieCardProps } from "@/interfaces";
 
 export default function WatchlistPage() {
-  const [watchlist, setWatchlist] = useState<any[]>([]);
+  const [watchlist, setWatchlist] = useState<MovieCardProps[]>([]);
 
   useEffect(() => {
     const stored = localStorage.getItem("watchlist");
