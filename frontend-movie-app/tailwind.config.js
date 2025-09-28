@@ -11,13 +11,11 @@ module.exports = {
         poppins: ["Poppins", "sans-serif"],
       },
       colors: {
-        brand: {
-          bluegrey: "#2b3149",
-          accent: "#eb4e62",
-          lighttext: "#e9e9e9",
-          darktext: "#333333",
-          faint: "#f5f5f5",
-        },
+          "bluegrey": "#2b3149",
+          "accent": "#eb4e62",
+          "lighttext": "#e9e9e9",
+          "darktext": "#333333",
+          "faint": "#f5f5f5",
       },
     },
   },
