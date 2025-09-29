@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MovieCarousel from "@/components/common/moviecarousel";
 import { Movie } from "@/interfaces";
+import HeroSection from "@/components/herosection";
 
 export default function Home() {
   const [trending, setTrending] = useState<Movie[]>([]);
@@ -43,54 +44,60 @@ export default function Home() {
     fetchMovies();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-10 text-center text-gray-800">
-        <p className="text-xl font-medium"></p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-10 text-center text-red-500">
-        <p className="text-xl font-medium">Error: {error}</p>
-      </div>
-    );
-  }
-
   return (
-    <main className="max-w-7xl mx-auto px-4 py-10">
+    <main className="max-w-7xl mx-auto px-8 sm:px-10 md:px-12 lg:px-16 py-8">
+      <HeroSection />
+      
       {/* Trending Movies */}
-      <section className="mb-12">
+      <section className="my-12">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">Trending Movies</h2>
-        <MovieCarousel
-          movies={trending.map((movie) => ({
-            ...movie,
-            id: movie.id,
-            title: movie.title,
-            poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-            year: movie.release_date?.split("-")[0],
-            rating: movie.vote_average.toFixed(1),
-            onToggleFavorite: handleToggleFavorite,
-          }))}
-        />
+        {loading ? (
+          <div className="text-center py-10">
+            <p className="text-xl font-medium text-gray-600">Loading trending movies...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-10">
+            <p className="text-xl font-medium text-red-500">Error: {error}</p>
+          </div>
+        ) : (
+          <MovieCarousel
+            movies={trending.map((movie) => ({
+              ...movie,
+              id: movie.id,
+              title: movie.title,
+              poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+              year: movie.release_date?.split("-")[0],
+              rating: movie.vote_average.toFixed(1),
+              onToggleFavorite: handleToggleFavorite,
+            }))}
+          />
+        )}
       </section>
 
       {/* Recommended Movies */}
       <section>
         <h2 className="text-3xl font-bold text-gray-800 mb-6">Recommended Movies</h2>
-        <MovieCarousel
-          movies={recommended.map((movie) => ({
-            ...movie,
-            id: movie.id,
-            title: movie.title,
-            poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-            year: movie.release_date?.split("-")[0],
-            rating: movie.vote_average.toFixed(1),
-            onToggleFavorite: handleToggleFavorite,
-          }))}
-        />
+        {loading ? (
+          <div className="text-center py-10">
+            <p className="text-xl font-medium text-gray-600">Loading recommended movies...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-10">
+            <p className="text-xl font-medium text-red-500">Error: {error}</p>
+          </div>
+        ) : (
+          <MovieCarousel
+            movies={recommended.map((movie) => ({
+              ...movie,
+              id: movie.id,
+              title: movie.title,
+              poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+              year: movie.release_date?.split("-")[0],
+              rating: movie.vote_average.toFixed(1),
+              onToggleFavorite: handleToggleFavorite,
+            }))}
+          />
+        )}
       </section>
     </main>
   );
