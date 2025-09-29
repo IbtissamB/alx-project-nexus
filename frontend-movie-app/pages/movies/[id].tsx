@@ -1,3 +1,4 @@
+//pages/movies/[id].tsx
 import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -46,21 +47,21 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                 </div>
 
                 {/* Content */}
-                <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row gap-8 items-end">
+                <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-12 py-10 flex flex-col md:flex-row gap-8 md:items-end">
                     {/* Poster */}
-                    <div className="w-full md:w-64 lg:w-72 flex-shrink-0">
+                    <div className="w-full md:w-64 lg:w-72 flex-shrink-0 flex justify-center md:justify-start">
                         <Image
                             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                             alt={movie.title}
                             width={300}
                             height={450}
-                            className="rounded-lg object-cover w-full h-auto"
+                            className="rounded-lg object-cover w-64 h-auto md:w-full"
                             priority
                         />
                     </div>
 
                     {/* Metadata */}
-                    <div className="flex-1">
+                    <div className="flex-1 text-center md:text-left">
                         <h1 className="text-3xl md:text-4xl font-semibold mb-4">{movie.title}</h1>
 
                         <div className="inline-flex items-center gap-2 bg-gray-800 text-white px-3 py-1 rounded-md mb-4">
@@ -68,7 +69,7 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                             <span className="text-sm">{movie.vote_average.toFixed(1)} / 10</span>
                         </div>
 
-                        <div className="flex flex-wrap gap-4 mb-4">
+                        <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-4">
                             <div className="flex items-center gap-2 text-sm text-white/90">
                                 <FaClock />
                                 <span>{movie.runtime} min</span>
@@ -79,7 +80,7 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2 mb-6">
+                        <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
                             {movie.genres?.map((genre) => (
                                 <span
                                     key={genre.id}
@@ -90,7 +91,7 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                             ))}
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center justify-center md:justify-start gap-4">
                             <a
                                 href="/favourites"
                                 className="flex items-center gap-2 text-white hover:text-red-500 transition"
@@ -112,13 +113,13 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
             </section>
 
             {/* Overview */}
-            <section className="max-w-7xl mx-auto px-4 py-10 text-gray-700">
+            <section className="max-w-7xl mx-auto px-6 sm:px-10 md:px-12 lg:px-16 py-10 text-gray-700">
                 <h2 className="text-3xl font-bold mb-4">Overview</h2>
-                <p className="text-gray-500/80 text-xl">{movie.overview}</p>
+                <p className="text-gray-500 text-xl">{movie.overview}</p>
             </section>
 
             {/* Cast */}
-            <section className="max-w-7xl mx-auto px-4 py-10 text-gray-700">
+            <section className="max-w-7xl mx-auto px-6 sm:px-10 md:px-12 lg:px-16 py-10 text-gray-700">
                 <h2 className="text-3xl font-bold mb-6">Cast</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                     {credits.cast.slice(0, 10).map((person) => (
@@ -144,7 +145,7 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
             </section>
 
             {/* Reviews Carousel */}
-            <section className="max-w-7xl mx-auto px-4 py-10 text-white relative">
+            <section className="max-w-7xl mx-auto px-6 sm:px-10 md:px-12 lg:px-16 py-10 text-white relative">
                 <h2 className="text-3xl text-gray-700 font-bold mb-6">Reviews</h2>
 
                 <div className="relative">
@@ -169,12 +170,12 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                     </Swiper>
 
                     {/* Custom navigation buttons */}
-                    <div className="custom-prev hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10">
+                    <div className="custom-prev hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10">
                         <button className="w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition hover:scale-110">
                             <BsChevronLeft className="text-xl" />
                         </button>
                     </div>
-                    <div className="custom-next hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10">
+                    <div className="custom-next hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10">
                         <button className="w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition hover:scale-110">
                             <BsChevronRight className="text-xl" />
                         </button>
@@ -184,7 +185,7 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
 
             {/* Related Movies */}
             {related.length > 0 && (
-                <section className="max-w-7xl mx-auto px-4 py-10 text-white relative">
+                <section className="max-w-7xl mx-auto px-6 sm:px-10 md:px-12 lg:px-16 py-10 text-white relative">
                     <h2 className="text-3xl text-gray-700 font-bold mb-6">Related Movies</h2>
 
                     <div className="relative">
@@ -239,12 +240,12 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
                         </Swiper>
 
                         {/* Navigation buttons */}
-                        <div className="related-prev hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10">
+                        <div className="related-prev hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10">
                             <button className="w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition hover:scale-110">
                                 <BsChevronLeft className="text-xl" />
                             </button>
                         </div>
-                        <div className="related-next hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10">
+                            <div className="related-next hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10">
                             <button className="w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition hover:scale-110">
                                 <BsChevronRight className="text-xl" />
                             </button>
