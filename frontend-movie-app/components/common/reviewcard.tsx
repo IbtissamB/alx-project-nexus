@@ -1,10 +1,12 @@
+//components/common/reviewcard.tsx
 import Image from "next/image";
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { Review } from "@/interfaces";
+import ReviewModal from "./reviewmodal";
 
 export default function ReviewCard({ review }: { review: Review }) {
-  const [expanded, setExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Handle avatar fallback
   const profile = review.author_details?.avatar_path;
@@ -44,19 +46,26 @@ export default function ReviewCard({ review }: { review: Review }) {
 
       {/* Review Content */}
       <div className="text-md text-white/90 leading-normal">
-        <p className={`${expanded ? "" : "line-clamp-3"} transition-all duration-300`}>
+        <p className="line-clamp-3">
           {review.content}
         </p>
 
         {review.content.length > 300 && (
           <button
-            onClick={() => setExpanded((prev) => !prev)}
-            className="mt-2 text-xs text-red-400 hover:underline"
+            onClick={() => setIsModalOpen(true)}
+            className="mt-2 text-xs text-red-400 hover:text-red-300 hover:underline transition-colors"
           >
-            {expanded ? "Read less" : "Read more"}
+            Read more
           </button>
         )}
       </div>
+
+      {/* Modal */}
+      <ReviewModal 
+        review={review} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </div>
   );
 }
