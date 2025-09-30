@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
-        const apiKey = process.env.TMDB_API_KEY;
+        const apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY;
       
         if (!apiKey) {
           return res.status(500).json({ error: "TMDB API key is missing" });

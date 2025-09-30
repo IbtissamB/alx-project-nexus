@@ -261,10 +261,10 @@ export default function MovieDetails({ movie, credits, reviews, related }: { mov
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const { id } = context.params!;
     const [movieRes, creditsRes, reviewsRes, similarRes] = await Promise.all([
-        fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&language=en-US`),
-        fetch(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.TMDB_API_KEY}&language=en-US`),
-        fetch(`https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1`),
-        fetch(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1`),
+        fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`),
+        fetch(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`),
+        fetch(`https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`),
+        fetch(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US&page=1`),
     ]);
 
     const movie = await movieRes.json();

@@ -2,9 +2,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { BsStarFill, BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import Link from "next/link";
+import { Movie } from "@/interfaces";
 
 export default function HeroSection() {
-  const [movies, setMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function HeroSection() {
 
         // Fetch full movie details for each item to get genres
         const detailedMovies = await Promise.all(
-          data.results.map(async (movie: any) => {
+          data.results.map(async (movie: Movie) => {
             const detailRes = await fetch(
               `https://api.themoviedb.org/3/movie/${movie.id}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`
             );
@@ -78,7 +79,7 @@ export default function HeroSection() {
 
           {/* Genres */}
           <div className="flex flex-wrap items-center gap-3">
-            {movie.genres?.map((genre: any) => (
+          {movie.genres?.map((genre) => (
               <span
                 key={genre.id}
                 className="px-3 py-1 bg-gray-700 rounded-full text-sm font-medium"
